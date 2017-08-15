@@ -1,4 +1,5 @@
 <?php
+// http://php.net/manual/en/function.hexdec.php#106797
 function get_mac_decimal($mac) {
     $clear_mac = preg_replace('/[^0-9A-F]/i','',$mac);
     $mac_decimal = array();
