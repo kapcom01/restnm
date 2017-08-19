@@ -11,10 +11,12 @@ $ini_array = parse_ini_file("switches.ini");
 foreach ($ini_array['ip'] as $ip) {
 ?>
 
-<p style="font-size:160%;">Switch (<?php echo $ip; ?>):</p>
-
+<p>
 <table border="1">
-<tr><td>Port Index</td><td>Port Name</td><td>MAC Address</td></tr>
+<caption>Switch (<?php echo $ip; ?>)</caption>
+<thead>
+    <tr><th>Port Index</th><th>Port Name</th><th>Mac Address</th></tr>
+</thead>
 
 <?php
 	$if2mac = ifname_mac($ip);
@@ -23,6 +25,7 @@ foreach ($ini_array['ip'] as $ip) {
 	}
 ?>
 </table>
+</p>
 
 <?php
 }
