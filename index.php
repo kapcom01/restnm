@@ -1,12 +1,8 @@
 <html>
 <head>
 <title>Manolis SNMP in PHP</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Manolis SNMP in PHP test</div>
 
 <?php
 include 'snmp_work.php';
@@ -22,6 +18,5 @@ foreach ($ini_array['ip'] as $ip) {
 	print("</table>");
 }
 ?>
-</div>
 </body>
 </html>
