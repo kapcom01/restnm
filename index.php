@@ -1,5 +1,7 @@
 <?php
 
+$switch_ip = "172.16.61.215";
+
 // metatrepei tis MAC apo hex se dec
 function get_mac_decimal($mac) {
     $clear_mac = preg_replace('/[^0-9A-F]/i','',$mac);
@@ -23,7 +25,7 @@ REFERENCE
 "IEEE 802.1D-1990: Section 3.9.1, 3.9.2"
 */
 
-$dot1dTpFdbAddressArray = snmpwalk("172.16.61.215", "public", "1.3.6.1.2.1.17.4.3.1.1");
+$dot1dTpFdbAddressArray = snmpwalk($switch_ip, "public", "1.3.6.1.2.1.17.4.3.1.1");
 foreach($dot1dTpFdbAddressArray as $dot1dTpFdbAddress) {
 
 	$pos = stripos($dot1dTpFdbAddress, ': ');
@@ -44,7 +46,7 @@ Implementors are encouraged to assign the port value to this object whenever it 
 */
 
 
-	$dot1dTpFdbPort = snmpget("172.16.61.215", "public", "1.3.6.1.2.1.17.4.3.1.2." . $macdec_address);
+	$dot1dTpFdbPort = snmpget($switch_ip, "public", "1.3.6.1.2.1.17.4.3.1.2." . $macdec_address);
 
         $pos = stripos($dot1dTpFdbPort, ': ');
         $port = substr($dot1dTpFdbPort, $pos+2);
@@ -62,7 +64,7 @@ defined in MIB-II, for the interface corresponding
 to this port."
 */
 
-	$dot1dBasePortIfIndex = snmpget("172.16.61.215", "public", "1.3.6.1.2.1.17.1.4.1.2." . $port);
+	$dot1dBasePortIfIndex = snmpget($switch_ip, "public", "1.3.6.1.2.1.17.1.4.1.2." . $port);
 
         $pos = stripos($dot1dBasePortIfIndex, ': ');
         $ifindex = substr($dot1dBasePortIfIndex, $pos+2);
@@ -89,7 +91,7 @@ interface is the proxied devices local name for it.
 If there is no local name, or this object is otherwise not
 applicable, then this object contains a zero-length string."
 */
-	$ifName = snmpget("172.16.61.215", "public", "1.3.6.1.2.1.31.1.1.1.1." . $ifindex);
+	$ifName = snmpget($switch_ip, "public", "1.3.6.1.2.1.31.1.1.1.1." . $ifindex);
 
 	$pos = stripos($ifName, ': ');
         $ifname = substr($ifName, $pos+2);
