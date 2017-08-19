@@ -97,11 +97,11 @@ applicable, then this object contains a zero-length string."
         $ifname = substr($ifName, $pos+2);
 
 
-	if(array_key_exists($ifname, $if2mac)) {
-		$if2mac[$ifname]=$if2mac[$ifname] . ", " . $mac_address;
+	if(array_key_exists($ifindex, $if2mac)) {
+		$if2mac[$ifindex][$ifname]=$if2mac[$ifindex][$ifname] . ", " . $mac_address;
 	}
 	else {
-	        $if2mac[$ifname]=$mac_address;;
+	        $if2mac[$ifindex][$ifname]=$mac_address;
 	}
 }
 return $if2mac;
