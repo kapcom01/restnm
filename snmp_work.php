@@ -11,7 +11,7 @@ function get_mac_decimal($mac) {
 }
 
 // epistrefei $ifname => $mac gia switch_ip
-function ifname_mac($ip) {
+function ifname_mac($switch_ip) {
 /*
 OID 1.3.6.1.2.1.17.4.3.1.1
 dot1dTpFdbAddress OBJECT-TYPE
