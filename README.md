@@ -1,4 +1,4 @@
-# GNA Network Manager
+# GNA Network Manager (pre-alpha1)
 
 A php application that shows the MAC Address(es) per port that are known to the switch(es). It uses the SNMP to get information from each switch and shows the results in a simple html table per switch.
 
