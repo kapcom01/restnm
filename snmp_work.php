@@ -11,7 +11,7 @@ function get_mac_decimal($mac) {
 }
 
 // epistrefei $ifname => $mac gia switch_ip
-function ifname_mac($ip) {
+function ifname_mac($switch_ip) {
 /*
 OID 1.3.6.1.2.1.17.4.3.1.1
 dot1dTpFdbAddress OBJECT-TYPE
@@ -97,12 +97,19 @@ applicable, then this object contains a zero-length string."
         $ifname = substr($ifName, $pos+2);
 
 
-	if(array_key_exists($ifname, $if2mac)) {
-		$if2mac[$ifname]=$if2mac[$ifname] . ", " . $mac_address;
-	}
-	else {
-	        $if2mac[$ifname]=$mac_address;;
-	}
+	$if2mac[] = array(
+		'ifindex' => $ifindex,
+		'ifname' => $ifname,
+		'mac_address' => $mac_address,
+	);
+
+//	if(array_key_exists($ifindex, $if2mac)) {
+//		$if2mac[$ifindex][$ifname]=$if2mac[$ifindex][$ifname] . ", " . $mac_address;
+//	}
+//	else {
+//	        $if2mac[$ifindex][$ifname]=$mac_address;
+//	}
+
 }
 return $if2mac;
 }
