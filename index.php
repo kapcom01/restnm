@@ -20,8 +20,8 @@ foreach ($ini_array['ip'] as $ip) {
 
 <?php
 	$if2mac = ifname_mac($ip);
-	foreach ($if2mac as $index => $name_mac) {
-		echo "<tr><td>$index</td><td>" . key($name_mac) . "</td><td>" . $name_mac[key($name_mac)] . "</td></tr>";
+	foreach ($if2mac as $row) {
+		echo "<tr><td>" . $row['ifindex'] . "</td><td>" . $row['ifname'] . "</td><td>" . $row['mac_address'] . "</td></tr>";
 	}
 ?>
 </table>
