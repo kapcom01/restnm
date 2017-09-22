@@ -33,6 +33,8 @@ foreach($dot1dTpFdbAddressArray as $dot1dTpFdbAddress) {
 
 	$macdec_address = get_mac_decimal($mac_address);
 
+	$mac_address = trim($mac_address);
+	$mac_address = str_replace(" ",":",$mac_address);
 /*
 OID 1.3.6.1.2.1.17.4.3.1.2
 dot1dTpFdbPort OBJECT-TYPE
@@ -101,6 +103,7 @@ applicable, then this object contains a zero-length string."
 		'ifindex' => $ifindex,
 		'ifname' => $ifname,
 		'mac_address' => $mac_address,
+		'ip_address' => "",
 	);
 
 //	if(array_key_exists($ifindex, $if2mac)) {
