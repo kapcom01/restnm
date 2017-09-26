@@ -19,9 +19,11 @@ foreach ($ini_array['ip'] as $ip) {
 </thead>
 
 <?php
-	$if2mac = ifname_mac($ip);
-	foreach ($if2mac as $row) {
-		echo "<tr><td>" . $row['ifindex'] . "</td><td>" . $row['ifname'] . "</td><td>" . $row['mac_address'] . "</td></tr>";
+	$swports = snmp_swports($ip);
+	foreach ($swports as $row) {
+		foreach ($row['mac_address'] as $row_mac_address) {
+			echo "<tr><td>" . $row['ifindex'] . "</td><td>" . $row['ifname'] . "</td><td>" . $row_mac_address . "</td></tr>";
+		}
 	}
 ?>
 </table>
