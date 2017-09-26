@@ -1,5 +1,6 @@
 <?php
 function mac_dec2hex($macdec) {
+	$macdec = strval($macdec);
 	$parts = explode(".", $macdec);
 	foreach ($parts as $decpart) {
 		$hexpart = dechex($decpart);
@@ -52,7 +53,7 @@ function snmp_swports($switch_ip) {
 		$key = substr($key, $pos+13);
 		$pos_colon = stripos($value, ': ');
 		$value = substr($value, $pos_colon+2);
-		$snmp_swports[$value]['mac_address'][] = mac_dec2hex(strval($key));
+		$snmp_swports[$value]['mac_address'][] = mac_dec2hex($key);
 	}
 
 	return $snmp_swports;
