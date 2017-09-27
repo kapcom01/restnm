@@ -7,11 +7,12 @@ function mac_dec2hex($macdec) {
 		if (strlen($hexpart)<2) $hexpart = "0".$hexpart;
 		$hexparts[]=$hexpart;
 	}
+	//strtoupper
 	return implode(":",$hexparts);
 }
 
 function snmp_swports($switch_ip) {
-	$debug_flag = true;
+	$debug_flag = false;
 	if ($debug_flag) include 'debug/snmp_debug.php';
 
 	// SNMP V1

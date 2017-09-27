@@ -6,28 +6,35 @@
 
 <?php
 include 'snmp_work.php';
+include 'arp_work.php';
 $ini_array = parse_ini_file("switches.ini");
 
+
 foreach ($ini_array['ip'] as $ip) {
+$swports = snmp_swports($ip);
+$arptable = get_mac_ip_vendor();
+
+  foreach ($arptable as $arp_row) {
+    if(strcmp($arp_row['ip_address'],$ip)==0)
+    {  $swvendor = $arp_row['vendor'];}
+  }
 ?>
 
 <p>
 <table border="1">
-<caption>Switch (<?php echo $ip; ?>)</caption>
-<thead>
-    <tr><th>Interface</th><th>MAC Address</th></tr>
-</thead>
+<tr><td colspan=4 align=center><b> <?php echo $swvendor . " (" .$ip. ")"; ?> </b></td></tr>
+<tr><td><b>Interface</b></td><td><b>MAC Address</b></td><td><b>IP Address</b></td><td><b>Vendor</b></td></tr>
 
 <?php
-	$swports = snmp_swports($ip);
-	$tr_bgcolor = "#F2F2F2";
-	foreach ($swports as $swport) {
-		if (count($swport['mac_address']))
-			$tr_bgcolor = ($tr_bgcolor=="#FFFFFF") ? "#F2F2F2" : "#FFFFFF";
-		foreach ($swport['mac_address'] as $row_mac_address) {
-			echo "<tr bgcolor=" . $tr_bgcolor . "><td>" . $swport['ifname'] . "</td><td>" . $row_mac_address . "</td></tr>";
-		}
-	}
+  $tr_bgcolor = "#BDBDBD";
+  foreach ($swports as $swport) {
+    if (count($swport['mac_address'])) {
+      $tr_bgcolor = ($tr_bgcolor=="#FFFFFF") ? "#BDBDBD" : "#FFFFFF";
+      foreach ($swport['mac_address'] as $row_mac_address) {
+        echo "<tr bgcolor=" . $tr_bgcolor . "><td>" . $swport['ifname'] . "</td><td>" . $row_mac_address . "</td><td>" . $arptable[$row_mac_address]['ip_address'] . "</td><td>" . $arptable[$row_mac_address]['vendor'] . "</td></tr>";
+        }
+      }
+    } 
 ?>
 </table>
 </p>
