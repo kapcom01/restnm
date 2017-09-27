@@ -15,13 +15,18 @@ foreach ($ini_array['ip'] as $ip) {
 <table border="1">
 <caption>Switch (<?php echo $ip; ?>)</caption>
 <thead>
-    <tr><th>Port Index</th><th>Port Name</th><th>Mac Address</th></tr>
+    <tr><th>Interface</th><th>MAC Address</th></tr>
 </thead>
 
 <?php
-	$if2mac = ifname_mac($ip);
-	foreach ($if2mac as $row) {
-		echo "<tr><td>" . $row['ifindex'] . "</td><td>" . $row['ifname'] . "</td><td>" . $row['mac_address'] . "</td></tr>";
+	$swports = snmp_swports($ip);
+	$tr_bgcolor = "#F2F2F2";
+	foreach ($swports as $swport) {
+		if (count($swport['mac_address']))
+			$tr_bgcolor = ($tr_bgcolor=="#FFFFFF") ? "#F2F2F2" : "#FFFFFF";
+		foreach ($swport['mac_address'] as $row_mac_address) {
+			echo "<tr bgcolor=" . $tr_bgcolor . "><td>" . $swport['ifname'] . "</td><td>" . $row_mac_address . "</td></tr>";
+		}
 	}
 ?>
 </table>

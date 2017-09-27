@@ -1,116 +1,61 @@
 <?php
-
-// metatrepei tis MAC apo hex se dec
-function get_mac_decimal($mac) {
-    $clear_mac = preg_replace('/[^0-9A-F]/i','',$mac);
-    $mac_decimal = array();
-    for ($i = 0; $i < strlen($clear_mac); $i += 2 ):
-        $mac_decimal[] = hexdec(substr($clear_mac, $i, 2));
-    endfor;
-    return implode('.',$mac_decimal);
+function mac_dec2hex($macdec) {
+	$macdec = strval($macdec);
+	$parts = explode(".", $macdec);
+	foreach ($parts as $decpart) {
+		$hexpart = dechex($decpart);
+		if (strlen($hexpart)<2) $hexpart = "0".$hexpart;
+		$hexparts[]=$hexpart;
+	}
+	return implode(":",$hexparts);
 }
 
-// epistrefei $ifname => $mac gia switch_ip
-function ifname_mac($switch_ip) {
-/*
-OID 1.3.6.1.2.1.17.4.3.1.1
-dot1dTpFdbAddress OBJECT-TYPE
-SYNTAX MacAddress
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION
-"A unicast MAC address for which the bridge has
-forwarding and/or filtering information."
-REFERENCE
-"IEEE 802.1D-1990: Section 3.9.1, 3.9.2"
-*/
+function snmp_swports($switch_ip) {
+	$debug_flag = true;
+	if ($debug_flag) include 'debug/snmp_debug.php';
 
-$dot1dTpFdbAddressArray = snmpwalk($switch_ip, "public", "1.3.6.1.2.1.17.4.3.1.1");
-foreach($dot1dTpFdbAddressArray as $dot1dTpFdbAddress) {
+	// SNMP V1
 
-	$pos = stripos($dot1dTpFdbAddress, ': ');
-	$mac_address = substr($dot1dTpFdbAddress, $pos+2);
+	// mac => port
+	$mac2port = ($debug_flag==false) ? snmprealwalk($switch_ip, "public", "1.3.6.1.2.1.17.4.3.1.2") : $mac2port;
 
-	$macdec_address = get_mac_decimal($mac_address);
+	// ifindex => ifname
+	$ifindex2ifname = ($debug_flag==false) ? snmprealwalk($switch_ip, "public", "1.3.6.1.2.1.31.1.1.1.1") : $ifindex2ifname;
 
-/*
-OID 1.3.6.1.2.1.17.4.3.1.2
-dot1dTpFdbPort OBJECT-TYPE
-SYNTAX INTEGER
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION
-Either the value 0, or the port number of the port on which a frame having a source address equal to the value of the corresponding $
-A value of 0 indicates that the port number has not been learned, but that the bridge does have some forwarding/filtering informatio$
-Implementors are encouraged to assign the port value to this object whenever it is learned, even for addresses for which the corresp$
-*/
+	// port => ifindex
+	$port2ifindex = ($debug_flag==false) ? snmprealwalk($switch_ip, "public", "1.3.6.1.2.1.17.1.4.1.2") : $port2ifindex;
 
 
-	$dot1dTpFdbPort = snmpget($switch_ip, "public", "1.3.6.1.2.1.17.4.3.1.2." . $macdec_address);
+	foreach ($ifindex2ifname as $key => $value) {
+		$pos_last_dot = strripos($key, ".");
+		$newkey = substr($key, $pos_last_dot+1);
+		$pos_colon = stripos($value, ': ');
+		$newvalue = substr($value, $pos_colon+2);
+		$ifindex2ifname[$newkey] = $newvalue;
+		unset($ifindex2ifname[$key]);
+	}
 
-        $pos = stripos($dot1dTpFdbPort, ': ');
-        $port = substr($dot1dTpFdbPort, $pos+2);
+	foreach ($port2ifindex as $key => $value) {
+		$pos_last_dot = strripos($key, ".");
+		$key = substr($key, $pos_last_dot+1);
+		$pos_colon = stripos($value, ': ');
+		$value = substr($value, $pos_colon+2);
+		$snmp_swports[$key] = array(
+			'ifindex' => $value,
+			'ifname' => $ifindex2ifname[$value],
+			'mac_address' => array(),
+			'ip_address' => "",
+			);
+	}
 
+	foreach($mac2port as $key => $value) {
+		$pos = stripos($key, '1.17.4.3.1.2.');
+		$key = substr($key, $pos+13);
+		$pos_colon = stripos($value, ': ');
+		$value = substr($value, $pos_colon+2);
+		$snmp_swports[$value]['mac_address'][] = mac_dec2hex($key);
+	}
 
-/*
-OID 1.3.6.1.2.1.17.1.4.1.2
-dot1dBasePortIfIndex OBJECT-TYPE
-SYNTAX INTEGER
-ACCESS read-only
-STATUS mandatory
-DESCRIPTION
-"The value of the instance of the ifIndex object,
-defined in MIB-II, for the interface corresponding
-to this port."
-*/
-
-	$dot1dBasePortIfIndex = snmpget($switch_ip, "public", "1.3.6.1.2.1.17.1.4.1.2." . $port);
-
-        $pos = stripos($dot1dBasePortIfIndex, ': ');
-        $ifindex = substr($dot1dBasePortIfIndex, $pos+2);
-
-/*
-OID 1.3.6.1.2.1.31.1.1.1.1
-ifName OBJECT-TYPE
-SYNTAX DisplayString
-MAX-ACCESS read-only
-STATUS current
-DESCRIPTION
-"The textual name of the interface. The value of this
-object should be the name of the interface as assigned by
-the local device and should be suitable for use in commands
-entered at the devices `console. This might be a text
-name, such as `le0 or a simple port number, such as `1,
-depending on the interface naming syntax of the device. If
-several entries in the iftable together represent a single
-interface as named by the device, then each will have the
-same value of ifName. Note that for an agent which responds
-to SNMP queries concerning an interface on some other
-(proxied) device, then the value of ifName for such an
-interface is the proxied devices local name for it.
-If there is no local name, or this object is otherwise not
-applicable, then this object contains a zero-length string."
-*/
-	$ifName = snmpget($switch_ip, "public", "1.3.6.1.2.1.31.1.1.1.1." . $ifindex);
-
-	$pos = stripos($ifName, ': ');
-        $ifname = substr($ifName, $pos+2);
-
-
-	$if2mac[] = array(
-		'ifindex' => $ifindex,
-		'ifname' => $ifname,
-		'mac_address' => $mac_address,
-	);
-
-//	if(array_key_exists($ifindex, $if2mac)) {
-//		$if2mac[$ifindex][$ifname]=$if2mac[$ifindex][$ifname] . ", " . $mac_address;
-//	}
-//	else {
-//	        $if2mac[$ifindex][$ifname]=$mac_address;
-//	}
-
-}
-return $if2mac;
+	return $snmp_swports;
 }
 ?>
