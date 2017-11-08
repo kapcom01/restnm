@@ -5,12 +5,16 @@ A php application that shows the MAC Address(es) per port that are known to the 
 ## Demo
 http://172.16.10.125/gnanm
 
-## Requirements
+## Installation
+`
+apt install apache2 libapache2-mod-php php-snmp
+cd /var/www/html
+git clone http://gitlab.kapnet.gr/kapcom01/gnanm.git
+`
 
-A php web server with **php-snmp** extension.
-
-## Usage
-
+## Configuration
 - Enable SNMP on the switch
 - Add the IP Address of the switch in `switches.ini`
-- Browse the web page
+
+## Usage
+Just browse the web page
