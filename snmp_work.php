@@ -12,7 +12,7 @@ function mac_dec2hex($macdec) {
 }
 
 function snmp_swports($switch_ip) {
-	$debug_flag = false;
+	$debug_flag = true; # na to balo se xexoristo arxeio
 	if ($debug_flag) include 'debug/snmp_debug.php';
 
 	// SNMP V1
@@ -42,11 +42,14 @@ function snmp_swports($switch_ip) {
 		$pos_colon = stripos($value, ': ');
 		$value = substr($value, $pos_colon+2);
 		$snmp_swports[$key] = array(
+			'id' => "",
 			'ifindex' => $value,
 			'ifname' => $ifindex2ifname[$value],
-			'mac_address' => array(),
-			'ip_address' => "",
-			);
+			//'devices' => array(
+			//	'mac_address' => "",
+			//	'ip_address' => "",
+			//)
+		);
 	}
 
 	foreach($mac2port as $key => $value) {
@@ -54,7 +57,7 @@ function snmp_swports($switch_ip) {
 		$key = substr($key, $pos+13);
 		$pos_colon = stripos($value, ': ');
 		$value = substr($value, $pos_colon+2);
-		$snmp_swports[$value]['mac_address'][] = mac_dec2hex($key);
+		$snmp_swports[$value]['devices'][] = array('mac_address' => mac_dec2hex($key), 'ip_address' => "");
 	}
 
 	return $snmp_swports;

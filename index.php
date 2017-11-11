@@ -28,10 +28,11 @@ $arptable = get_mac_ip_vendor();
 <?php
   $tr_bgcolor = "#BDBDBD";
   foreach ($swports as $swport) {
-    if (count($swport['mac_address'])) {
+    if (count($swport['devices'])) {
       $tr_bgcolor = ($tr_bgcolor=="#FFFFFF") ? "#BDBDBD" : "#FFFFFF";
-      foreach ($swport['mac_address'] as $row_mac_address) {
-        echo "<tr bgcolor=" . $tr_bgcolor . "><td>" . $swport['ifname'] . "</td><td>" . $row_mac_address . "</td><td>" . $arptable[$row_mac_address]['ip_address'] . "</td><td>" . $arptable[$row_mac_address]['vendor'] . "</td></tr>";
+      foreach ($swport['devices'] as $row_devices) {
+        $mac_address = $row_devices['mac_address'];
+        echo "<tr bgcolor=" . $tr_bgcolor . "><td>" . $swport['ifname'] . "</td><td>" . $mac_address . "</td><td>" . $arptable[$mac_address]['ip_address'] . "</td><td>" . $arptable[$mac_address]['vendor'] . "</td></tr>";
         }
       }
     } 
