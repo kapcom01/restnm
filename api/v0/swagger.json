@@ -1,0 +1,290 @@
+swagger: '2.0'
+info:
+  description: >-
+    GNANM provides a RESTful API, copmliant to OpenAPI 3.0, to manage network devices from your application.
+  version: 0.0.1
+  title: GNA Network Manager API
+  contact:
+    email: manolis@kapcom.gr
+host: gnanm.local
+basePath: /api/v0
+tags:
+  - name: switch
+    description: Access SNMP and ARP data of your Switches
+schemes:
+  - http
+paths:
+  /switch:
+    post:
+      tags:
+        - switch
+      summary: Add a new switch
+      description: ''
+      operationId: addSwitch
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Switch object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/Switch'
+      responses:
+        '405':
+          description: Invalid input
+#      security:
+#        - gnanm_auth:
+#            - 'write:switches'
+#            - 'read:switches'
+    put:
+      tags:
+        - switch
+      summary: Update an existing switch
+      description: ''
+      operationId: updateSwitch
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Switch object that needs to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Switch'
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Switch not found
+        '405':
+          description: Validation exception
+#      security:
+#        - gnanm_auth:
+#            - 'write:switches'
+#            - 'read:switches'
+  '/switch/{switchId}':
+    get:
+      tags:
+        - switch
+      summary: Find switch by ID
+      description: Returns a single switch
+      operationId: getSwitchById
+      produces:
+        - application/json
+      parameters:
+        - name: switchId
+          in: path
+          description: ID of switch to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Switch'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Switch not found
+#      security:
+#        - api_key: []
+    post:
+      tags:
+        - switch
+      summary: Update a switch with form data
+      description: ''
+      operationId: updateSwitchWithForm
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: switchId
+          in: path
+          description: ID of switch that needs to be updated
+          required: true
+          type: integer
+          format: int64
+        - name: name
+          in: formData
+          description: Updated name of the switch
+          required: false
+          type: string
+        - name: status
+          in: formData
+          description: Updated status of the switch
+          required: false
+          type: string
+      responses:
+        '405':
+          description: Invalid input
+#      security:
+#        - gnanm_auth:
+#            - 'write:switches'
+#            - 'read:switches'
+    delete:
+      tags:
+        - switch
+      summary: Deletes a switch
+      description: ''
+      operationId: deleteSwitch
+      produces:
+        - application/json
+      parameters:
+        - name: api_key
+          in: header
+          required: false
+          type: string
+        - name: switchId
+          in: path
+          description: Switch id to delete
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Switch not found
+#      security:
+#        - gnanm_auth:
+#            - 'write:switches'
+#            - 'read:switches'
+
+#securityDefinitions:
+#  gnanm_auth:
+#    type: oauth2
+#    authorizationUrl: 'http://gnanm.local/api/oauth/dialog'
+#    flow: implicit
+#    scopes:
+#      'write:switches': modify switches
+#      'read:switches': read switches data
+#  api_key:
+#    type: apiKey
+#    name: api_key
+#    in: header
+definitions:
+  Order:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      petId:
+        type: integer
+        format: int64
+      quantity:
+        type: integer
+        format: int32
+      shipDate:
+        type: string
+        format: date-time
+      status:
+        type: string
+        description: Order Status
+        enum:
+          - placed
+          - approved
+          - delivered
+      complete:
+        type: boolean
+        default: false
+    xml:
+      name: Order
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Category
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      userStatus:
+        type: integer
+        format: int32
+        description: User Status
+    xml:
+      name: User
+  Tag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Tag
+  Switch:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+      category:
+        $ref: '#/definitions/Category'
+      name:
+        type: string
+        example: doggie
+      photoUrls:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: string
+      tags:
+        type: array
+        xml:
+          name: tag
+          wrapped: true
+        items:
+          $ref: '#/definitions/Tag'
+      status:
+        type: string
+        description: pet status in the store
+        enum:
+          - available
+          - pending
+          - sold
+    xml:
+      name: Pet
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
