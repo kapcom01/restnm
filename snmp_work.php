@@ -12,7 +12,7 @@ function mac_dec2hex($macdec) {
 }
 
 function snmp_swports($switch_ip) {
-	$debug_flag = true; # na to balo se xexoristo arxeio
+	$debug_flag = file_exists("enable_debug");
 	if ($debug_flag) include 'debug/snmp_debug.php';
 
 	// SNMP V1
