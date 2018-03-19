@@ -11,7 +11,7 @@ function mac_dec2hex($macdec) {
 	return implode(":",$hexparts);
 }
 
-function snmp_swports($switch_ip) {
+function get_snmp_data($switch_ip) {
 	$debug_flag = file_exists("enable_debug");
 	if ($debug_flag) include 'debug/snmp_debug.php';
 
