@@ -5,6 +5,8 @@ include 'gnaip-schema.php';
 
 $ini_array = parse_ini_file("switches.ini");
 
+header('Access-Control-Allow-Origin: *');
+
 foreach ($ini_array['ip'] as $ip) {
   $swports = get_snmp_data($ip);
   $arptable = get_arp_data();
