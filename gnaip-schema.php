@@ -9,7 +9,7 @@ function ktirio($ip_address){
   else
     $ktirio = substr($ip_byte[2], 0, 1);
 
-  return $ktirio;
+  return (int)$ktirio;
 }
 
 function orofos($ip_address){
@@ -21,7 +21,7 @@ function orofos($ip_address){
   else
     $orofos = substr($ip_byte[2], 1, 1)-1;
 
-  return $orofos;
+  return (int)$orofos;
 }
 
 function typos($ip_address){
