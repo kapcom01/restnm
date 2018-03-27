@@ -8,13 +8,18 @@ http://172.16.10.125/gnanm
 ## Installation
 `
 apt install apache2 libapache2-mod-php php-snmp php-sqlite3
-cd /var/www/html
+cd /var/www/
 git clone http://gitlab.kapnet.gr/kapcom01/gnanm.git
 `
 
 ## Configuration
 - Enable SNMP on the switch
 - Add the IP Address of the switch in `switches.ini`
+- Update Database:
+`
+cd gnanm
+php start_update.php
+`
 
 ## Usage
 Just browse the web page
