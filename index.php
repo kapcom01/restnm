@@ -44,7 +44,6 @@ foreach ($ini_array['ip'] as $ip) {
 
 // iterate arp data
 foreach (array_keys($arptable) as $arp_mac) {
-  if($swport['uplink']==1) continue;
   $data[] = array(
     'id' => $i++, // temp workaround for ui grouping
     'switch_ip' => "",
