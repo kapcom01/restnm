@@ -15,10 +15,9 @@ git clone http://gitlab.kapnet.gr/kapcom01/gnanm.git
 ## Configuration
 - Enable SNMP on the switch
 - Add the IP Address of the switch in `switches.ini`
-- Update Database:
+- To update the database run:
 `
-cd gnanm
-php start_update.php
+php start-update.php
 `
 
 ## Usage
