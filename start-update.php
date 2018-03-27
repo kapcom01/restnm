@@ -11,7 +11,7 @@ class MyDB extends SQLite3
 {
     function __construct()
     {
-        $this->open('mysqlitedb.db');
+        $this->open('gnanm.db');
     }
 }
 
