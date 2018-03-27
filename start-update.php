@@ -32,11 +32,13 @@ $create_table_sql = "CREATE TABLE snmp_table (
         device_vendor STRING
 
 )";
+
+$db->exec("DROP TABLE snmp_table");
 $db->exec($create_table_sql);
 
 $i=1;
 foreach ($ini_array['ip'] as $ip) {
-  echo "SNMP: (".$i."/". count($ini_array['ip']) . ") updating db for Switch: ".$ip ." <br>\n";
+  echo "SNMP: (".$i++."/". count($ini_array['ip']) . ") populating db for Switch: ".$ip ." <br>\n";
 
   $swports = get_snmp_data($ip);
   $arptable = get_arp_data();
@@ -45,22 +47,22 @@ foreach ($ini_array['ip'] as $ip) {
   foreach ($swports as $swport) {
     if (count($swport['mac_address'])) {
       foreach ($swport['mac_address'] as $row_mac_address) {
-        if($swport['uplink']==1) {
+        if($swport['uplink']) {
                 continue;
         }
         else {
 		$insert_row_sql = "INSERT INTO snmp_table (switch_ip,switch_ktirio,switch_orofos,switch_ifname,switch_uplink_port,device_macaddress,device_ipaddress,device_typos,device_ktirio,device_orofos,device_vendor) VALUES (
-        	  ". $ip .",
-	          ". ktirio($ip) .",
-	          ". orofos($ip) .",
-	          ". $swport['ifname'] .",
-	          ". $swport['uplink'] .",
-	          ". $row_mac_address .",
-	       	  ". $arptable[$row_mac_address]['ip_address'] .",
-	          ". typos($arptable[$row_mac_address]['ip_address']) .",
-        	  ". ktirio($arptable[$row_mac_address]['ip_address']) .",
-	          ". orofos($arptable[$row_mac_address]['ip_address']) .",
-	          ". $arptable[$row_mac_address]['vendor'] ."
+        	  '". $ip ."',
+	          '". ktirio($ip) ."',
+	          '". orofos($ip) ."',
+	          '". $swport['ifname'] ."',
+	          '". $swport['uplink'] ."',
+	          '". $row_mac_address ."',
+	       	  '". $arptable[$row_mac_address]['ip_address'] ."',
+	          '". typos($arptable[$row_mac_address]['ip_address']) ."',
+        	  '". ktirio($arptable[$row_mac_address]['ip_address']) ."',
+	          '". orofos($arptable[$row_mac_address]['ip_address']) ."',
+	          '". $arptable[$row_mac_address]['vendor'] ."'
 	        )";
 		$db->exec($insert_row_sql);
 	        unset($arptable[$row_mac_address]);
@@ -70,5 +72,5 @@ foreach ($ini_array['ip'] as $ip) {
   }
 }
 
-echo "ARP: run: 'netdiscover -P -L -r 172.16.0.0/16 >netdiscover.out'\n"; 
+echo "ARP: now you must run: 'netdiscover -P -L -r 172.16.0.0/16 >netdiscover.out'\n"; 
 ?>

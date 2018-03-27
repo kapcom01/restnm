@@ -7,8 +7,6 @@ $ini_array = parse_ini_file("switches.ini");
 
 header('Access-Control-Allow-Origin: *');
 
-$i=0;
-
 foreach ($ini_array['ip'] as $ip) {
   $swports = get_snmp_data($ip);
   $arptable = get_arp_data();
@@ -17,7 +15,7 @@ foreach ($ini_array['ip'] as $ip) {
   foreach ($swports as $swport) {
     if (count($swport['mac_address'])) {
       foreach ($swport['mac_address'] as $row_mac_address) {
-        if($swport['uplink']==1) {
+        if($swport['uplink']) {
 		continue;
 	}
 	else {
@@ -35,8 +33,8 @@ foreach ($ini_array['ip'] as $ip) {
 	          'device_orofos' => orofos($arptable[$row_mac_address]['ip_address']),
 	          'device_vendor' => $arptable[$row_mac_address]['vendor']
 	        );
+		unset($arptable[$row_mac_address]);
 	}
-        unset($arptable[$row_mac_address]);
       }
     }
   }

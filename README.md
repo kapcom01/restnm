@@ -7,7 +7,7 @@ http://172.16.10.125/gnanm
 
 ## Installation
 `
-apt install apache2 libapache2-mod-php php-snmp
+apt install apache2 libapache2-mod-php php-snmp php-sqlite3
 cd /var/www/html
 git clone http://gitlab.kapnet.gr/kapcom01/gnanm.git
 `
