@@ -26,6 +26,22 @@ function get_snmp_data($switch_ip) {
 	// port => ifindex
 	$port2ifindex = ($debug_flag==false) ? snmprealwalk($switch_ip, "public", "1.3.6.1.2.1.17.1.4.1.2") : $port2ifindex;
 
+	// find uplink temp workarount
+	foreach ($mac2port as $port) {
+                $pos_colon = stripos($port, ': ');
+                $port = substr($port, $pos_colon+2);
+		if(array_key_exists($port, $portcounter)) $portcounter[$port]++;
+		else $portcounter[$port]=1;
+		error_log ($port);
+	}
+
+	$max=0;
+	foreach ($portcounter as $port => $counter) {
+		if($counter>$max) {
+			$uplink_port = $port;
+			$max = $counter;
+		}
+	}
 
 	foreach ($ifindex2ifname as $key => $value) {
 		$pos_last_dot = strripos($key, ".");
@@ -46,6 +62,7 @@ function get_snmp_data($switch_ip) {
 			'ifname' => $ifindex2ifname[$value],
 			'mac_address' => array(),
 			'ip_address' => "",
+			'uplink' => ($key==$uplink_port) ? 1 : 0,
 			);
 	}
 
