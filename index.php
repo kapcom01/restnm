@@ -1,49 +1,43 @@
 <?php
-include 'snmp_work.php';
+include_once 'db_work.php';
 include 'arp_work.php';
 include 'gnaip-schema.php';
 
-$ini_array = parse_ini_file("switches.ini");
-
 header('Access-Control-Allow-Origin: *');
 
-foreach ($ini_array['ip'] as $ip) {
-  $swports = get_snmp_data($ip);
-  $arptable = get_arp_data();
-
-  // iterate snmp data
-  foreach ($swports as $swport) {
-    if (count($swport['mac_address'])) {
-      foreach ($swport['mac_address'] as $row_mac_address) {
-        if($swport['uplink']) {
+// fetch snmp_table
+$snmp_data = db_get_snmp();
+foreach ($snmp_data as $data_row) {
+        if($data_row['uplink']) {
 		continue;
 	}
 	else {
+		$device_mac = $data_row['device_macaddress'];
+		$id = $data_row['id'];
+
 		$data[] = array(
-        	  'id' => $i++, // temp workaround for ui grouping
-	          'switch_ip' => $ip,
-	          'switch_ktirio' => ktirio($ip),
-	          'switch_orofos' => orofos($ip),
-	          'switch_ifname' => $swport['ifname'],
-	          'switch_uplink_port' => $swport['uplink'],
-	          'device_macaddress' => $row_mac_address,
-        	  'device_ipaddress' => $arptable[$row_mac_address]['ip_address'],
-	          'device_typos' => typos($arptable[$row_mac_address]['ip_address']),
-	          'device_ktirio' => ktirio($arptable[$row_mac_address]['ip_address']),
-	          'device_orofos' => orofos($arptable[$row_mac_address]['ip_address']),
-	          'device_vendor' => $arptable[$row_mac_address]['vendor']
+        	  'id' => $data_row['id'],
+	          'switch_ip' => $data_row['switch_ip'],
+	          'switch_ktirio' => ktirio($data_row['switch_ip']),
+	          'switch_orofos' => orofos($data_row['switch_ip']),
+	          'switch_ifname' => $data_row['switch_ifname'],
+	          'switch_uplink_port' => $data_row['switch_uplink_port'],
+	          'device_macaddress' => $device_mac,
+        	  'device_ipaddress' => $arptable[$device_mac]['ip_address'],
+	          'device_typos' => typos($arptable[$device_mac]['ip_address']),
+	          'device_ktirio' => ktirio($arptable[$device_mac]['ip_address']),
+	          'device_orofos' => orofos($arptable[$device_mac]['ip_address']),
+	          'device_vendor' => $arptable[$device_mac]['vendor']
 	        );
-		unset($arptable[$row_mac_address]);
+		unset($arptable[$device_mac]);
 	}
-      }
-    }
-  }
 }
 
 // iterate arp data
+$arptable = get_arp_data();
 foreach (array_keys($arptable) as $arp_mac) {
   $data[] = array(
-    'id' => $i++, // temp workaround for ui grouping
+    'id' => ++$id, // temp workaround for ui grouping
     'switch_ip' => "",
     'switch_ktirio' => "",
     'switch_orofos' => "",
