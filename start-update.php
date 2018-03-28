@@ -14,5 +14,9 @@ foreach ($ini_array['ip'] as $ip) {
   db_put_snmp($ip);
 }
 
-echo "ARP: now you must run: 'netdiscover -P -L -r 172.16.0.0/16 >netdiscover.out'\n"; 
+echo "ARP: running netdiscover for 172.16.0.0/16 <br>\n";
+if($debug_flag==0) exec("netdiscover -P -N -r 172.16.0.0/16 >netdiscover.out");
+
+echo "Done. <br>\n";
+echo "Visit: http://" . getHostByName(getHostName()) . "/ui.php\n";
 ?>
