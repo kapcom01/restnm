@@ -6,7 +6,7 @@ db_recreate();
 $debug_flag = file_exists("enable_debug");
 
 if ($debug_flag) $ini_array = parse_ini_file("debug/switches.ini");
-else $myfile = $ini_array = parse_ini_file("switches.ini");
+else $ini_array = parse_ini_file("switches.ini");
 
 $i=1;
 foreach ($ini_array['ip'] as $ip) {
