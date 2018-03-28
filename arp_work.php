@@ -1,6 +1,10 @@
 <?php
 function get_arp_data(){
-	$myfile = fopen("netdiscover.out", "r") or die("Unable to open file!");
+        $debug_flag = file_exists("enable_debug");
+
+        if ($debug_flag) $myfile = fopen("debug/netdiscover.out", "r") or die("Unable to open file!");
+	else $myfile = fopen("netdiscover.out", "r") or die("Unable to open file!");
+
 	while(! feof($myfile))
 	{
 		$str = fgets($myfile);
