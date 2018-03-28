@@ -1,4 +1,4 @@
 enable_debug
-./netdiscover.out
-./gnanm.db
-./switches.ini
+netdiscover.out
+gnanm.db
+switches.ini
