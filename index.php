@@ -5,6 +5,8 @@ include 'gnaip-schema.php';
 
 header('Access-Control-Allow-Origin: *');
 
+$arptable = get_arp_data();
+
 // fetch snmp_table
 $snmp_data = db_get_snmp();
 foreach ($snmp_data as $data_row) {
@@ -34,7 +36,6 @@ foreach ($snmp_data as $data_row) {
 }
 
 // iterate arp data
-$arptable = get_arp_data();
 foreach (array_keys($arptable) as $arp_mac) {
   $data[] = array(
     'id' => ++$id, // temp workaround for ui grouping
