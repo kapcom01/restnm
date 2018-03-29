@@ -1,3 +1,7 @@
+<?php
+$api_url = "http://" . getHostByName(getHostName());
+?>
+
 <html>
 <head>
 <title>GNA Network Manager</title>
@@ -11,7 +15,6 @@
 <?php
 $tr_bgcolor = "#BDBDBD";
 
-$api_url = 'http://10.207.25.228/';
 $content = file_get_contents($api_url);
 $json = json_decode($content, true);
 

@@ -1,6 +1,7 @@
 <?php
 include_once 'db_work.php';
 
+echo "DB: recreating database";
 db_recreate();
 
 $debug_flag = file_exists("enable_debug");
