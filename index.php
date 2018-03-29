@@ -10,10 +10,10 @@ $arptable = get_arp_data();
 // fetch snmp_table
 $snmp_data = db_get_snmp();
 foreach ($snmp_data as $data_row) {
-        //if($data_row['uplink']) {
-	//	continue;
-	//}
-	//else {
+        if($data_row['switch_uplink_port']) {
+		continue;
+	}
+	else {
 		$device_mac = $data_row['device_macaddress'];
 		$id = $data_row['id'];
 
@@ -32,7 +32,7 @@ foreach ($snmp_data as $data_row) {
 	          'device_vendor' => $arptable[$device_mac]['vendor']
 	        );
 		unset($arptable[$device_mac]);
-	//}
+	}
 }
 
 // iterate arp data
