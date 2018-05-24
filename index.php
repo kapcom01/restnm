@@ -5,6 +5,7 @@ include 'gnaip-schema.php';
 
 header('Access-Control-Allow-Origin: *');
 
+function getAll() {
 $arptable = get_arp_data();
 
 // fetch snmp_table
@@ -53,5 +54,6 @@ foreach (array_keys($arptable) as $arp_mac) {
   );
 }
 
-echo json_encode($data);
+return json_encode($data);
+}
 ?>
