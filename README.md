@@ -1,24 +1,16 @@
-# GNA Network Manager (pre-alpha1)
+# RESTful Network Manager (pre-alpha2)
 
-A php application that shows the MAC Address(es) per port that are known to the switch(es). It uses the SNMP to get information from each switch and shows the results in a simple html table per switch.
-
-## Demo
-http://172.16.10.125/gnanm
+Detects network devices using ARP and gathers information about them using SNMP. All data is provided through a REST API.
 
 ## Installation
 `
-apt install apache2 libapache2-mod-php php-snmp php-sqlite3
-cd /var/www/
-git clone http://gitlab.kapnet.gr/kapcom01/gnanm.git
+apt install php-snmp php-sqlite3 composer netdiscover
+git clone http://gitlab.kapnet.gr/kapcom01/restnm.git
+cd restnm
+php composer.phar install
 `
 
-## Configuration
-- Enable SNMP on the switch
-- Add the IP Address of the switch in `switches.ini`
-- To update the database run:
+## Run
 `
-php start-update.php
+php restnm.php 0.0.0.0:3000
 `
-
-## Usage
-Just browse the web page
