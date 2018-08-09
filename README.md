@@ -10,7 +10,7 @@ Detects network devices using ARP and gathers information about them using SNMP.
 
 ## Configuration
     cp switches.ini.example switches.ini
-    php start-update.php
+    sudo php start-update.php
 
 ## Run
     php restnm.php 0.0.0.0:3000
